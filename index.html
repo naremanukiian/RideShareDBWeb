@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RideShare DB — Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- ── SIDEBAR ─────────────────────────────────────────────── -->
+<aside class="sidebar" id="sidebar">
+  <div class="logo">
+    <div class="logo-mark">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <rect width="28" height="28" rx="8" fill="#6366f1"/>
+        <path d="M7 18 L14 8 L21 18" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="14" cy="20" r="2" fill="white"/>
+      </svg>
+    </div>
+    <div class="logo-text">
+      <div class="logo-title">RideShareDB</div>
+      <div class="logo-sub">Admin Dashboard</div>
+    </div>
+  </div>
+
+  <div class="pov-badge">
+    <div class="pov-icon">&#128274;</div>
+    <div>
+      <div class="pov-role">Database Administrator</div>
+      <div class="pov-desc">Full read/write access · ride_dba role</div>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-group-label">Analytics</div>
+    <a class="nav-item active" data-view="dashboard" onclick="showView('dashboard',this)">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M3 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 8a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4zm8-8a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zm0 8a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item" data-view="rides" onclick="showView('rides',this)">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/><path d="M3 4h1.5l2.7 7.5H14l1.5-5H6.9"/></svg>
+      Rides
+      <span class="nav-badge">42</span>
+    </a>
+    <a class="nav-item" data-view="drivers" onclick="showView('drivers',this)">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/></svg>
+      Drivers
+      <span class="nav-badge">42</span>
+    </a>
+    <a class="nav-item" data-view="users" onclick="showView('users',this)">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM2 8a2 2 0 114 0A2 2 0 012 8zM13.4 14a4.06 4.06 0 00-.4-1.5A4 4 0 006 14H2a6 6 0 0116 0h-4.6z"/></svg>
+      Users
+      <span class="nav-badge">42</span>
+    </a>
+    <a class="nav-item" data-view="payments" onclick="showView('payments',this)">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"/></svg>
+      Payments
+      <span class="nav-badge">42</span>
+    </a>
+    <div class="nav-group-label" style="margin-top:16px">Database</div>
+    <a class="nav-item" data-view="schema" onclick="showView('schema',this)">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+      Schema
+    </a>
+    <a class="nav-item" data-view="triggers" onclick="showView('triggers',this)">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>
+      Triggers
+      <span class="nav-badge">7</span>
+    </a>
+    <a class="nav-item" data-view="procedures" onclick="showView('procedures',this)">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+      Procedures
+      <span class="nav-badge">8</span>
+    </a>
+    <a class="nav-item" data-view="dcl" onclick="showView('dcl',this)">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+      Access Control
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="db-status">
+      <span class="status-dot"></span>
+      <div>
+        <div class="db-name">RideSharingDB</div>
+        <div class="db-meta">SQL Server · 8 tables · 1,279 lines</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ── MOBILE HAMBURGER ─────────────────────────────────────── -->
+<button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+  <span></span><span></span><span></span>
+</button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- ── MAIN ────────────────────────────────────────────────── -->
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="page-title" id="pageTitle">Dashboard</div>
+      <div class="breadcrumb">RideSharingDB &rsaquo; <span id="breadSub">Overview</span></div>
+    </div>
+    <div class="topbar-right">
+      <div class="search-box">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/></svg>
+        <input type="text" placeholder="Search..." id="searchInput" oninput="handleSearch(this.value)"/>
+      </div>
+      <div class="topbar-user">
+        <div class="avatar">DA</div>
+        <span>ride_dba</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ═══════════ DASHBOARD ═══════════ -->
+    <section class="view active" id="view-dashboard">
+      <div class="section-intro">
+        <h2 class="view-heading">Overview</h2>
+        <p class="view-desc">Real-time summary of all data in <code>RideSharingDB</code> — Jan–Feb 2024 operations across 4 US cities.</p>
+      </div>
+
+      <div class="stats-grid" id="statsGrid"></div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Revenue by City</div>
+            <div class="card-meta">vw_revenue_by_city · 4 cities</div>
+          </div>
+          <div class="card-body">
+            <div class="bar-chart" id="cityChart"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Ride Status Distribution</div>
+            <div class="card-meta">42 rides · Jan–Feb 2024</div>
+          </div>
+          <div class="card-body">
+            <div class="donut-wrap">
+              <svg id="donutSvg" width="130" height="130" viewBox="0 0 130 130"></svg>
+              <div class="donut-legend" id="donutLegend"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Payment Methods</div>
+            <div class="card-meta">42 transactions · method breakdown</div>
+          </div>
+          <div class="card-body">
+            <div class="bar-chart" id="methodChart"></div>
+            <div class="divider"></div>
+            <div class="bar-chart" id="payStatusChart"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Top 5 Drivers by Earnings</div>
+            <div class="card-meta">Q1 2024 · completed rides only</div>
+          </div>
+          <div class="card-body" style="padding:0">
+            <table class="table" id="top5Table"></table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Driver Availability</div>
+          <div class="card-meta">drivers table · status managed by BR-6 &amp; BR-7 triggers</div>
+        </div>
+        <div class="card-body">
+          <div class="bar-chart" id="drvStatusChart"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ RIDES ═══════════ -->
+    <section class="view" id="view-rides">
+      <div class="section-intro">
+        <h2 class="view-heading">Rides</h2>
+        <p class="view-desc">All 42 trip records from <code>vw_ride_details</code> — joins users, drivers, vehicles, locations (×2), and promocodes. <code>RideDuration</code> is auto-computed by <strong>trg_calc_duration</strong> (BR-5).</p>
+      </div>
+      <div class="kpi-row" id="ridesKpi"></div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">All Rides — vw_ride_details</div>
+          <div class="card-meta" id="ridesMeta">42 records</div>
+        </div>
+        <div class="table-wrap">
+          <table class="table" id="ridesTable">
+            <thead><tr>
+              <th>ID</th><th>Passenger</th><th>Driver</th>
+              <th>From</th><th>To</th><th>City</th>
+              <th>Start Time</th><th>Duration</th><th>Fare</th><th>Promo</th><th>Status</th>
+            </tr></thead>
+            <tbody id="ridesTbody"></tbody>
+          </table>
+        </div>
+        <div class="table-footer" id="ridesFooter"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════ DRIVERS ═══════════ -->
+    <section class="view" id="view-drivers">
+      <div class="section-intro">
+        <h2 class="view-heading">Drivers</h2>
+        <p class="view-desc">All 42 registered drivers from <code>vw_driver_summary</code>. Rating is auto-recalculated by <strong>trg_update_driver_rating</strong> (BR-4). Status managed automatically by BR-6 &amp; BR-7.</p>
+      </div>
+      <div class="kpi-row" id="driversKpi"></div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Driver Roster</div>
+            <div class="card-meta">42 drivers · vw_driver_summary</div>
+          </div>
+          <div class="table-wrap">
+            <table class="table" id="driversTable">
+              <thead><tr><th>ID</th><th>Name</th><th>Licence</th><th>Vehicle</th><th>Rating</th><th>Status</th></tr></thead>
+              <tbody id="driversTbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Ratings Log</div>
+            <div class="card-meta">40 ratings · completed rides only</div>
+          </div>
+          <div class="table-wrap">
+            <table class="table" id="ratingsTable">
+              <thead><tr><th>Ride</th><th>Driver ★</th><th>User ★</th><th>Comment</th></tr></thead>
+              <tbody id="ratingsTbody"></tbody>
+            </table>
+          </div>
+          <div class="table-footer">UNIQUE(RideID) enforces one rating per ride · DriverRating NOT NULL</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ USERS ═══════════ -->
+    <section class="view" id="view-users">
+      <div class="section-intro">
+        <h2 class="view-heading">Users</h2>
+        <p class="view-desc">All 42 registered passengers from the <code>users</code> table. Email is unique and format-checked (CHECK constraint). <strong>trg_no_concurrent_rides</strong> (BR-1) ensures only one active ride per user.</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">User Registry</div>
+          <div class="card-meta">42 users · Jan–Nov 2023 registrations</div>
+        </div>
+        <div class="table-wrap">
+          <table class="table" id="usersTable">
+            <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Registered</th></tr></thead>
+            <tbody id="usersTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ PAYMENTS ═══════════ -->
+    <section class="view" id="view-payments">
+      <div class="section-intro">
+        <h2 class="view-heading">Payments</h2>
+        <p class="view-desc">All 42 payment records from <code>vw_payment_overview</code>. <strong>trg_validate_payment_ride</strong> (BR-3) blocks any payment INSERT if the ride is Cancelled.</p>
+      </div>
+      <div class="kpi-row" id="paymentsKpi"></div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Payment Ledger — vw_payment_overview</div>
+          <div class="card-meta">42 records · BR-3 enforced at engine level</div>
+        </div>
+        <div class="table-wrap">
+          <table class="table" id="paymentsTable">
+            <thead><tr><th>Pay ID</th><th>Ride</th><th>Passenger</th><th>Amount</th><th>Method</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody id="paymentsTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ SCHEMA ═══════════ -->
+    <section class="view" id="view-schema">
+      <div class="section-intro">
+        <h2 class="view-heading">Database Schema</h2>
+        <p class="view-desc">8 tables · 10 foreign keys · 12 CHECK constraints · 6 UNIQUE constraints · 8 DEFAULT values · Full 3NF normalisation · 15 non-clustered indexes</p>
+      </div>
+      <div class="schema-grid" id="schemaGrid"></div>
+    </section>
+
+    <!-- ═══════════ TRIGGERS ═══════════ -->
+    <section class="view" id="view-triggers">
+      <div class="section-intro">
+        <h2 class="view-heading">Triggers</h2>
+        <p class="view-desc">7 triggers enforce business rules at the SQL Server engine level — independent of application code. Rules fire even if the database is accessed directly via SSMS.</p>
+      </div>
+      <div class="grid-2" id="triggersGrid"></div>
+    </section>
+
+    <!-- ═══════════ PROCEDURES ═══════════ -->
+    <section class="view" id="view-procedures">
+      <div class="section-intro">
+        <h2 class="view-heading">Stored Procedures</h2>
+        <p class="view-desc">8 parameterised stored procedures encapsulate all major application operations. Each procedure uses <code>SET NOCOUNT ON</code> and proper T-SQL error handling.</p>
+      </div>
+      <div class="proc-grid" id="procGrid"></div>
+    </section>
+
+    <!-- ═══════════ ACCESS CONTROL ═══════════ -->
+    <section class="view" id="view-dcl">
+      <div class="section-intro">
+        <h2 class="view-heading">Access Control (DCL)</h2>
+        <p class="view-desc">3 database roles created with <code>CREATE LOGIN</code>, <code>CREATE USER</code>, <code>GRANT</code>, <code>DENY</code>, and <code>ALTER ROLE</code>. Principle of least privilege — each role can only do what its use case requires.</p>
+      </div>
+      <div class="dcl-grid" id="dclGrid"></div>
+      <div class="card" style="margin-top:20px">
+        <div class="card-header">
+          <div class="card-title">Verification Query</div>
+          <div class="card-meta">Run in SSMS to confirm permissions</div>
+        </div>
+        <div class="card-body">
+          <pre class="code-block"><span class="kw">SELECT</span>
+    dp.name              <span class="kw">AS</span> LoginName,
+    p.permission_name    <span class="kw">AS</span> Permission,
+    p.state_desc         <span class="kw">AS</span> State
+<span class="kw">FROM</span>   sys.database_permissions p
+<span class="kw">JOIN</span>   sys.database_principals  dp
+    <span class="kw">ON</span> p.grantee_principal_id = dp.principal_id
+<span class="kw">WHERE</span>  dp.name <span class="kw">IN</span> (<span class="str">'ride_app'</span>, <span class="str">'ride_report'</span>, <span class="str">'ride_dba'</span>)
+<span class="kw">ORDER</span> <span class="kw">BY</span> dp.name, p.permission_name;</pre>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /content -->
+</main>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
