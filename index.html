@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>RideShareDB — Database Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- ══ LOGIN SCREEN ══════════════════════════════════════════ -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="login-logo">
+        <div class="login-logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
+        <span class="login-brand">RideShare<span>DB</span></span>
+      </div>
+      <p class="login-tagline">SQL Server Database Dashboard</p>
+    </div>
+
+    <div class="login-body">
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="login-section-title">Credentials</div>
+        <div class="login-form">
+          <div class="lf-group">
+            <label for="loginUser">Username</label>
+            <input id="loginUser" type="text" placeholder="Enter your username" autocomplete="username"/>
+          </div>
+          <div class="lf-group">
+            <label for="loginPass">Password</label>
+            <input id="loginPass" type="password" placeholder="Enter your password" autocomplete="current-password"/>
+          </div>
+        </div>
+
+        <div class="login-divider"><span>or sign in as a role directly</span></div>
+        <div class="login-section-title" style="margin-top:4px">Select Role</div>
+
+        <div class="login-roles" id="loginRoles">
+          <button type="button" class="role-btn active" data-role="passenger" onclick="selectLoginRole('passenger',this)">
+            <div class="role-btn-name">Passenger</div>
+            <div class="role-btn-login">ride_app</div>
+            <div class="role-btn-perm">SELECT · INSERT · UPDATE</div>
+          </button>
+          <button type="button" class="role-btn" data-role="driver" onclick="selectLoginRole('driver',this)">
+            <div class="role-btn-name">Driver</div>
+            <div class="role-btn-login">ride_app</div>
+            <div class="role-btn-perm">SELECT · INSERT · UPDATE</div>
+          </button>
+          <button type="button" class="role-btn" data-role="analyst" onclick="selectLoginRole('analyst',this)">
+            <div class="role-btn-name">Analyst</div>
+            <div class="role-btn-login">ride_report</div>
+            <div class="role-btn-perm">SELECT only</div>
+          </button>
+          <button type="button" class="role-btn" data-role="dba" onclick="selectLoginRole('dba',this)">
+            <div class="role-btn-name">DBA Admin</div>
+            <div class="role-btn-login">ride_dba</div>
+            <div class="role-btn-perm">db_owner · full access</div>
+          </button>
+        </div>
+
+        <div id="loginError" class="login-error">Incorrect username or password. Please try again.</div>
+        <button type="submit" class="login-submit" style="margin-top:16px">Sign In</button>
+      </form>
+    </div>
+
+    <div class="login-footer">
+      <p>RideShareDB · SQL Server 2019 · T-SQL · 8 Tables · 7 Triggers · 8 Procedures</p>
+      <div class="login-creds">
+        Demo credentials &mdash;
+        <strong>passenger / driver / analyst / dba</strong> · password: <strong>demo</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP SHELL ══════════════════════════════════════════════ -->
+<div id="app" class="app hidden">
+  <aside id="sidebar" class="sidebar">
+    <div class="sb-top">
+      <div class="sb-brand">
+        <div class="sb-brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div>
+          <div class="sb-brand-name">RideShareDB</div>
+          <div class="sb-brand-sub">Live SQL Engine</div>
+        </div>
+      </div>
+      <div class="sb-user" onclick="signOut()" title="Sign out">
+        <div class="sb-avatar" id="sbAvatar"></div>
+        <div>
+          <div class="sb-user-name" id="sbUserName"></div>
+          <div class="sb-user-role" id="sbUserRole"></div>
+        </div>
+        <span class="sb-user-switch">&#8644;</span>
+      </div>
+    </div>
+    <nav id="sbNav" class="sb-nav"></nav>
+    <div class="sb-foot">
+      <div class="sb-status-dot"></div>
+      <div>
+        <div class="sb-db-name">RideSharingDB</div>
+        <div class="sb-db-meta" id="sbMeta">8 tables · live</div>
+      </div>
+    </div>
+  </aside>
+
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  <div class="overlay" id="overlay"></div>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="tb-left">
+        <div class="tb-title" id="tbTitle">Dashboard</div>
+        <div class="tb-crumb">RideSharingDB &rsaquo; <span id="tbSub"></span></div>
+      </div>
+      <div class="tb-right">
+        <div class="tb-search">
+          <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/></svg>
+          <input placeholder="Search tables..." oninput="doSearch(this.value)"/>
+        </div>
+        <div class="tb-avatar" id="tbAvatar"></div>
+      </div>
+    </header>
+
+    <!-- Live SQL event log -->
+    <div id="sqlLog" class="sql-log"></div>
+
+    <div class="page" id="page"></div>
+  </main>
+</div>
+
+<!-- ══ MODAL ══════════════════════════════════════════════════ -->
+<div id="modalOverlay" class="modal-overlay hidden" onclick="if(event.target===this)closeModal()">
+  <div id="modalBox" class="modal-box"></div>
+</div>
+
+<!-- ══ TOASTS ═════════════════════════════════════════════════ -->
+<div id="toastZone" class="toast-zone"></div>
+
+<script src="data.js"></script>
+<script src="engine.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
